@@ -1,1 +1,3 @@
-traditional_ML/catboost_info/traditional_ML/models/*.pkl
+traditional_ML/catboost_info/
+traditional_ML/models/*.pkl
+.idea/
