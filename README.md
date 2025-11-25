@@ -26,7 +26,7 @@ This project provides a complete pipeline for predicting molecular properties fr
 - **Scikit-learn** for machine learning
 - **RDKit** for molecular processing
 
-## ✨ Features
+## Features
 
 - Train Random Forest models on molecular descriptor data
 - Predict multiple molecular properties simultaneously (multi-label classification)
