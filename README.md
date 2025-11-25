@@ -55,12 +55,11 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 3. **Create a `requirements.txt` file with the following contents:**
 ```
-numpy>=1.26.4
-pandas>=1.3.0
-scikit-learn>=1.3.2
-rdkit>=2022.9.1
-mordredcommunity>=2.0.6
-rdkit>=2023.9.1
+numpy==1.26.4
+pandas==2.1.4
+scikit-learn==1.7.2
+rdkit==2023.9.1
+mordredcommunity==2.0.6
 ```
 
 4. **Install dependencies:**
