@@ -1,6 +1,6 @@
-# Molecular Property Prediction with Random Forest
+# Food odorant predictor Prediction with Random Forest
 
-A machine learning model for multi-label classification of molecular properties using Random Forest models and Mordred molecular descriptors.
+A machine learning model for multi-label classification of food odorants using Random Forest models and Mordred molecular descriptors.
 
 **Authors:** Annika Siebenhaar, Francesco Ferri
 **Year:** 2025
@@ -19,7 +19,7 @@ A machine learning model for multi-label classification of molecular properties 
 
 ## Overview
 
-This project provides a complete pipeline for predicting molecular properties from SMILES (Simplified Molecular Input Line Entry System) strings. The pipeline uses:
+This project provides a complete pipeline for predicting odor profile from SMILES (Simplified Molecular Input Line Entry System) strings. The pipeline uses:
 
 - **Mordred molecular descriptors** for feature representation
 - **Random Forest classifier** for multi-label prediction
@@ -29,7 +29,7 @@ This project provides a complete pipeline for predicting molecular properties fr
 ## Features
 
 - Train Random Forest models on molecular descriptor data
-- Predict multiple molecular properties simultaneously (multi-label classification)
+- Predict multiple odor labels (multi-label classification)
 - Automatic computation of Mordred descriptors from SMILES
 
 ## Requirements
@@ -55,11 +55,11 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 3. **Create a `requirements.txt` file with the following contents:**
 ```
-numpy>=1.21.0
-pandas>=1.3.0
-scikit-learn>=1.0.0
-rdkit>=2022.9.1
-mordred>=1.2.0
+numpy==1.26.4
+pandas==2.1.4
+scikit-learn==1.7.2
+rdkit==2023.9.1
+mordredcommunity==2.0.6
 ```
 
 4. **Install dependencies:**
