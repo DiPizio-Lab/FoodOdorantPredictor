@@ -1,5 +1,5 @@
 n_estimators: 1100
 min_samples_leaf: 3
-min_samples_split: 7
+min_samples_split: 2
 random_state: 42
-n_features: 620
+n_features: 783

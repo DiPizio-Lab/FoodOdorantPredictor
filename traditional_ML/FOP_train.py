@@ -12,7 +12,6 @@ import argparse
 import ast
 import logging
 import pickle
-import sys
 from pathlib import Path
 from typing import Tuple
 
@@ -30,12 +29,7 @@ logger = logging.getLogger(__name__)
 
 # Get the absolute path to the script directory
 SCRIPT_DIR = Path(__file__).resolve().parent
-SRC_DIR = SCRIPT_DIR / 'src'
 DATA_DIR = SCRIPT_DIR / 'data'
-
-# Add src directory to Python path
-sys.path.insert(0, str(SRC_DIR))
-
 
 class RFModelTrainer:
     """
@@ -46,7 +40,7 @@ class RFModelTrainer:
         self,
         n_estimators: int = 1100,
         min_samples_leaf: int = 3,
-        min_samples_split: int = 7,
+        min_samples_split: int = 2,
         random_state: int = 42
     ):
         """
@@ -97,7 +91,7 @@ class RFModelTrainer:
         # Strategy: Find samples with only ONE descriptor active - these give definitive position mappings
         # Example: Descriptors=['earthy'] with OHE=[0,0,...,1,...,0] means that position maps to 'earthy'
 
-        if 'Descriptors' in ohe_train.columns:
+        if 'Labels' in ohe_train.columns:
             logger.info("Mapping descriptors to OHE positions...")
 
             # Get the length of OHE array
@@ -110,7 +104,7 @@ class RFModelTrainer:
             # First pass: Find samples with exactly ONE descriptor (definitive mappings)
             for idx in range(len(ohe_train)):
                 try:
-                    desc_str = ohe_train['Descriptors'].iloc[idx]
+                    desc_str = ohe_train['Labels'].iloc[idx]
                     ohe_str = ohe_train['OneHotEncoding'].iloc[idx]
 
                     descriptors = ast.literal_eval(desc_str)
@@ -135,7 +129,7 @@ class RFModelTrainer:
             position_descriptor_counts = {}
             for idx in range(len(ohe_train)):
                 try:
-                    desc_str = ohe_train['Descriptors'].iloc[idx]
+                    desc_str = ohe_train['Labels'].iloc[idx]
                     ohe_str = ohe_train['OneHotEncoding'].iloc[idx]
 
                     descriptors = ast.literal_eval(desc_str)
@@ -187,7 +181,7 @@ class RFModelTrainer:
             sample_ohe = ast.literal_eval(ohe_train['OneHotEncoding'].iloc[0])
             n_labels = len(sample_ohe)
             self.label_names = [f'Label_{i}' for i in range(n_labels)]
-            logger.warning(f"'Descriptors' column not found, using generic names")
+            logger.warning(f"'Labels' column not found, using generic names")
 
         # Show sample of label names
         logger.info(f"Total labels: {len(self.label_names)}")
@@ -331,7 +325,7 @@ class RFModelTrainer:
         predictions: np.ndarray,
         proba: np.ndarray,
         output_dir: str,
-        prefix: str = "Mordred_shortend-correlation_95"
+        prefix: str = "RF_test"
     ) -> None:
         """
         Save predictions and probabilities to CSV files.
@@ -346,15 +340,13 @@ class RFModelTrainer:
         output_path.mkdir(parents=True, exist_ok=True)
 
         # Save predictions
-        pred_filename = (f"{prefix}_RF_{self.n_estimators}_"
-                        f"{self.min_samples_leaf}_{self.min_samples_split}_predict.csv")
+        pred_filename = (f"{prefix}_predict.csv")
         pred_path = output_path / pred_filename
         pd.DataFrame(predictions).to_csv(pred_path, sep=';', index=False)
         logger.info(f"Predictions saved to {pred_path}")
 
         # Save probabilities
-        proba_filename = (f"{prefix}_RF_{self.n_estimators}_"
-                         f"{self.min_samples_leaf}_{self.min_samples_split}_predict_proba.csv")
+        proba_filename = (f"{prefix}_predict_proba.csv")
         proba_path = output_path / proba_filename
         pd.DataFrame(proba).to_csv(proba_path, sep=';', index=False)
         logger.info(f"Probabilities saved to {proba_path}")
@@ -368,25 +360,25 @@ def main():
     parser.add_argument(
         '--ohe-train',
         type=str,
-        default=str(DATA_DIR / 'OHE_train_dataset_All_Food_6_shortend_recat.csv'),
+        default=str(DATA_DIR / 'OHE_train_dataset_All_Food.csv'),
         help='Path to One-Hot Encoded training labels'
     )
     parser.add_argument(
         '--ohe-test',
         type=str,
-        default=str(DATA_DIR / 'OHE_test_dataset_All_Food_6_shortend_recat.csv'),
+        default=str(DATA_DIR / 'OHE_test_dataset_All_Food.csv'),
         help='Path to One-Hot Encoded test labels'
     )
     parser.add_argument(
         '--x-train',
         type=str,
-        default=str(DATA_DIR / 'Mordred_train_dataset_shortend-correlation_95_All_Food_6.csv'),
+        default=str(DATA_DIR / 'X_train_features_Mordred.csv'),
         help='Path to training features (Mordred descriptors)'
     )
     parser.add_argument(
         '--x-test',
         type=str,
-        default=str(DATA_DIR / 'Mordred_test_dataset_shortend-correlation_95_All_Food_6.csv'),
+        default=str(DATA_DIR / 'X_test_features_Mordred.csv'),
         help='Path to test features (Mordred descriptors)'
     )
     parser.add_argument(
@@ -404,7 +396,7 @@ def main():
     parser.add_argument(
         '--min-samples-split',
         type=int,
-        default=7,
+        default=2,
         help='Minimum samples required to split node'
     )
     parser.add_argument(
