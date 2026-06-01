@@ -3,7 +3,7 @@
 A machine learning model for multi-label classification of food odorants using Random Forest models and Mordred molecular descriptors.
 
 **Authors:** Annika Siebenhaar, Francesco Ferri
-**Year:** 2025
+**Year:** 2026
 
 ## Table of Contents
 
